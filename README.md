@@ -1,6 +1,40 @@
-# SpringBoot Sandbox
+# SpringBoot Sandbox Application
 
 A Spring Boot application with MongoDB integration
+
+## Tech Stack
+
+### Backend
+- **Java 17**
+- **Spring Boot 3.2.0**
+  - Spring Web
+  - Spring Data MongoDB
+  - Actuator (for monitoring)
+- **MongoDB 6.0** (Document database)
+
+### Infrastructure
+- **Docker** (Containerization)
+- **Kubernetes** (Orchestration)
+- **Prometheus** (Metrics collection)
+- **Grafana** (Monitoring dashboards)
+
+### CI/CD
+- GitHub Actions
+- Automated testing and deployment
+
+## Application Purpose
+
+This is a demonstration application showcasing:
+- REST API development with Spring Boot
+- MongoDB integration
+- Containerized deployment
+- Monitoring and observability
+- CI/CD automation
+
+Key features:
+- Product CRUD operations
+- Environment-specific configurations
+- Health/metrics endpoints
 
 ## Environments
 
@@ -17,6 +51,54 @@ SPRING_PROFILES_ACTIVE=staging ./mvnw spring-boot:run
 ### Production
 ```bash
 SPRING_PROFILES_ACTIVE=prod ./mvnw spring-boot:run
+```
+
+## Running the Application
+
+### Prerequisites
+- Java 17 JDK
+- Maven
+- Docker
+- Kubernetes cluster (for K8s deployment)
+
+### Local Development
+```bash
+./mvnw spring-boot:run
+```
+
+### Docker
+1. Build image:
+```bash
+docker build -t springboot-sandbox .
+```
+
+2. Run container:
+```bash
+docker run -p 8080:8080 springboot-sandbox
+```
+
+### Docker Compose
+```bash
+docker-compose up -d
+```
+Access at: http://localhost:8080
+
+### Kubernetes
+1. Apply base configuration:
+```bash
+kubectl apply -k k8s/base
+```
+
+2. Environment-specific deployments:
+```bash
+# Development
+kubectl apply -k k8s/overlays/dev
+
+# Staging
+kubectl apply -k k8s/overlays/staging
+
+# Production
+kubectl apply -k k8s/overlays/prod
 ```
 
 ## Deployment
@@ -38,9 +120,47 @@ kubectl apply -k k8s/overlays/prod
 - Docker image built on main branch updates
 - Kubernetes deployment on version tags
 
+## Monitoring
+
+The application comes with built-in monitoring:
+
+### Access Dashboards
+```bash
+# Prometheus (metrics)
+minikube service prometheus -n monitoring
+
+# Grafana (dashboards)
+minikube service grafana -n monitoring
+```
+
+### Included Dashboards
+1. **Spring Boot Metrics**
+   - JVM performance
+   - HTTP request stats
+   - Cache metrics
+
+2. **MongoDB Dashboard**
+   - Query performance
+   - Connection stats
+   - Operation rates
+
+### Metrics Endpoints
+- `/actuator/health` - Application health
+- `/actuator/prometheus` - Prometheus metrics
+
+## CI/CD Pipeline
+
+The GitHub Actions workflow provides:
+1. Automated testing on every push
+2. Docker image building on main branch updates
+3. Staging deployment on tag creation
+4. Production deployment (manual approval)
+
 ## Configuration
-- All configurations in YAML
-- Environment-specific files:
-  - `application-dev.yaml`
-  - `application-staging.yaml`
-  - `application-prod.yaml`
+
+Environment-specific configs in:
+- `application-dev.yaml`
+- `application-staging.yaml`
+- `application-prod.yaml`
+
+All configurations use YAML format for consistency.
