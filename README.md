@@ -120,6 +120,53 @@ kubectl apply -k k8s/overlays/prod
 - Docker image built on main branch updates
 - Kubernetes deployment on version tags
 
+## Docker Configuration
+
+### Updated Dockerfile
+```dockerfile
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package
+
+# Runtime stage
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+### Key Improvements
+- Uses verified Eclipse Temurin images
+- Multi-stage build for smaller final image
+- Proper port exposure (8080)
+- Health check endpoints included
+
+## Monitoring Setup
+
+### Included Dashboards
+1. **Spring Boot Metrics**
+   - JVM memory/CPU usage
+   - HTTP request rates/latency
+   - Thread pool metrics
+
+2. **MongoDB Dashboard**
+   - Query operations
+   - Connection stats
+   - Document CRUD rates
+
+### Access Metrics
+```bash
+# Prometheus
+http://localhost:9090
+
+# Grafana
+http://localhost:3000 (admin/admin)
+```
+
 ## Monitoring
 
 The application comes with built-in monitoring:
@@ -132,17 +179,6 @@ minikube service prometheus -n monitoring
 # Grafana (dashboards)
 minikube service grafana -n monitoring
 ```
-
-### Included Dashboards
-1. **Spring Boot Metrics**
-   - JVM performance
-   - HTTP request stats
-   - Cache metrics
-
-2. **MongoDB Dashboard**
-   - Query performance
-   - Connection stats
-   - Operation rates
 
 ### Metrics Endpoints
 - `/actuator/health` - Application health
@@ -164,3 +200,21 @@ Environment-specific configs in:
 - `application-prod.yaml`
 
 All configurations use YAML format for consistency.
+
+## Troubleshooting
+
+### Common Issues
+1. **Port conflicts**: Check if ports 8080/27017 are free
+2. **MongoDB connection**: Wait for MongoDB to initialize
+3. **Build failures**: Clean build with `docker system prune`
+
+### Useful Commands
+```bash
+# View logs
+docker-compose logs -f
+
+# Restart services
+docker-compose restart
+
+# Clean up
+docker system prune
