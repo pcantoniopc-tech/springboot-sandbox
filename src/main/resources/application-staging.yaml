@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      host: mongodb-staging
+      port: 27017
+      database: springboot_sandbox_staging
+
+server:
+  port: 8080

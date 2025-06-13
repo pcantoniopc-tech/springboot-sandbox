@@ -1,0 +1,7 @@
+resources:
+- ../namespace.yaml
+- ../mongodb-secret.yaml
+- ../mongodb.yaml
+- ../app-configmap.yaml
+- ../app.yaml
+- ../ingress.yaml

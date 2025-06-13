@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+data:
+  springboot-dashboard.json: |
+    {"dashboard": ${replace(springboot-dashboard.json, '"', '\"')}}
+  mongodb-dashboard.json: |
+    {"dashboard": ${replace(mongodb-dashboard.json, '"', '\"')}}

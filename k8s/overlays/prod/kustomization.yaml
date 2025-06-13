@@ -1,0 +1,14 @@
+resources:
+- ../../base
+
+patches:
+- target:
+    kind: ConfigMap
+    name: app-config
+  path: configmap-patch.yaml
+
+secretGenerator:
+- name: mongodb-secret
+  literals:
+    - username=prod-admin
+    - password=${MONGO_PROD_PASSWORD}

@@ -1,0 +1,24 @@
+{
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "rate(mongodb_metrics_operation_total[1m])",
+          "legendFormat": "{{operation}}",
+          "refId": "A"
+        }
+      ],
+      "title": "MongoDB Operations",
+      "type": "timeseries"
+    }
+  ],
+  "title": "MongoDB Dashboard",
+  "uid": "mongodb-dashboard"
+}

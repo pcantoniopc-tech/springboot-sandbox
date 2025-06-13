@@ -9,7 +9,6 @@ on:
 
 env:
   IMAGE_NAME: springboot-sandbox
-  KUBE_NAMESPACE: springboot-sandbox
 
 jobs:
   test:
@@ -45,7 +44,7 @@ jobs:
         push: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
         tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-  deploy:
+  deploy-staging:
     needs: build-docker
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
@@ -55,13 +54,24 @@ jobs:
     - name: Install kubectl
       uses: azure/setup-kubectl@v3
     
-    - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/namespace.yaml
-        kubectl apply -f k8s/mongodb-secret.yaml
-        kubectl apply -f k8s/mongodb.yaml
-        kubectl apply -f k8s/app-configmap.yaml
-        kubectl apply -f k8s/app.yaml
-        kubectl apply -f k8s/ingress.yaml
+    - name: Deploy to Staging
+      run: kubectl apply -k k8s/overlays/staging
       env:
-        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_STAGING }}
+
+  deploy-prod:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') # Only deploy to prod on version tags (v1.0.0)
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+    
+    - name: Deploy to Production
+      run: |
+        kubectl apply -k k8s/overlays/prod
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_PROD }}
+        MONGO_PROD_PASSWORD: ${{ secrets.MONGO_PROD_PASSWORD }}

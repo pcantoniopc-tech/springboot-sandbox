@@ -1,0 +1,7 @@
+resources:
+- namespace.yaml
+- prometheus-config.yaml
+- prometheus-deployment.yaml
+- grafana-config.yaml
+- grafana-deployment.yaml
+- grafana-dashboards-config.yaml

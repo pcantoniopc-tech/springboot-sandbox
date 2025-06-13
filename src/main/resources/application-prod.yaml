@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      host: mongodb-prod
+      port: 27017
+      database: springboot_sandbox_prod
+      username: ${MONGO_USER}
+      password: ${MONGO_PASSWORD}
+      authentication-database: admin
+
+server:
+  port: 8080
