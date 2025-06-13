@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: springboot_sandbox
+      username: root
+      password: example
+      authentication-database: admin
+
+server:
+  port: 8080
